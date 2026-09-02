@@ -1,0 +1,12 @@
+absl-py
+chex
+dm-haiku
+equinox
+jax
+jaxlib
+jax-privacy
+numpy
+optax
+scipy
+tensorflow
+torch
