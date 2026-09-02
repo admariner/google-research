@@ -16,6 +16,7 @@
 """Uses Jaxline for training."""
 
 import functools
+import os
 
 from absl import app
 from absl import flags
@@ -27,6 +28,7 @@ import models as adv_models
 import optax
 from praxis import base_hyperparams
 import t5.data
+import tensorflow as tf
 import utils as adv_utils
 
 instantiate = base_hyperparams.instantiate
@@ -58,6 +60,10 @@ class Experiment(experiment.AbstractExperiment):
 
     super().__init__(mode=mode, init_rng=init_rng)
     self.config = config
+
+    self._text_writer = tf.summary.create_file_writer(
+        os.path.join(config.checkpoint_dir, mode)
+    )
 
     init_rng = jax.random.fold_in(init_rng, jax.process_index())
 
@@ -231,8 +237,10 @@ class Experiment(experiment.AbstractExperiment):
 
     print('-' * 30)
 
-    if writer is not None:
-      writer.write_text(global_step, text_to_log)
+    with self._text_writer.as_default():
+      for k, v in text_to_log.items():
+        tf.summary.text(k, v, step=int(global_step))
+    self._text_writer.flush()
 
     return metrics
 

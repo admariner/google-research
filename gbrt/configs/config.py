@@ -62,6 +62,7 @@ def get_config():
   exp.evaluation = config_dict.ConfigDict()
 
   config.checkpoint_dir = '/tmp/gbrt_run'
+  exp.checkpoint_dir = config.checkpoint_dir
   config.interval_type = 'steps'
   log_interval = 10
   config.log_train_data_interval = log_interval  # Logging to tensorboard
